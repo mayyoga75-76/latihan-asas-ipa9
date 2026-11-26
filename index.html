@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBT MTs Al-Mudzakkirin - UAS IPA Kelas 9</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            /* Mencegah seleksi teks, long-press copy di HP, dan pull-to-refresh */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            overscroll-behavior-y: contain;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Navbar (Responsif untuk HP & Desktop) -->
+    <header class="bg-blue-700 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="bg-white text-blue-700 p-1.5 sm:p-2 rounded-lg font-bold shrink-0">
+                    <i class="fas fa-graduation-cap text-lg sm:text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm sm:text-lg leading-tight">CBT MTs Al-Mudzakkirin</h1>
+                    <p class="text-[11px] sm:text-xs text-blue-200">UAS IPA Sem. 1 • Kelas IX</p>
+                </div>
+            </div>
+            
+            <div id="nav-actions" class="flex items-center space-x-2">
+                <button onclick="showTeacherLogin()" class="bg-blue-800 hover:bg-blue-900 active:scale-95 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5 border border-blue-600">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Panel Guru</span>
+                </button>
+            </div>
+
+            <!-- Info Ujian Aktif (Tampil ringkas di HP) -->
+            <div id="exam-header-info" class="hidden flex items-center space-x-2 sm:space-x-4">
+                <div class="flex items-center space-x-1.5 bg-red-600 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs sm:text-sm font-bold shadow-sm">
+                    <i class="fas fa-shield-alt"></i>
+                    <span><span id="warning-badge">0</span>/10</span>
+                </div>
+                <div class="bg-blue-900 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-lg flex items-center space-x-1.5 font-mono text-sm sm:text-lg font-bold border border-blue-500">
+                    <i class="far fa-clock text-yellow-400 text-xs sm:text-base"></i>
+                    <span id="timer-display">60:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6">
+
+        <!-- 1. HALAMAN LOGIN SISWA -->
+        <div id="view-login" class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 my-auto">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 sm:p-6 text-white text-center">
+                <h2 class="text-xl sm:text-2xl font-bold mb-1">Login Peserta Ujian</h2>
+                <p class="text-blue-100 text-xs sm:text-sm">MTs Al-Mudzakkirin • IPA Kelas 9</p>
+            </div>
+            
+            <form id="student-login-form" class="p-5 sm:p-6 space-y-4">
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-3.5 rounded-r-lg text-xs text-amber-900">
+                    <div class="font-bold flex items-center gap-1.5 mb-1 text-amber-800">
+                        <i class="fas fa-mobile-alt text-amber-600 text-sm"></i>
+                        Aturan Ujian di HP (Anti-Curang):
+                    </div>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Gunakan browser <strong>Google Chrome / Safari</strong>.</li>
+                        <li><strong>Dilarang pindah aplikasi</strong>, membalas chat/notifikasi, atau split-screen.</li>
+                        <li><strong>10 kali peringatan</strong> akan otomatis mengunci & mengumpulkan ujian Anda!</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="student-name" required placeholder="Ketik nama lengkap Anda..." 
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm sm:text-base">
+                </div>
+
+                <div>
+                    <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Kelas</label>
+                    <select id="student-class" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white text-sm sm:text-base">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="9A">Kelas 9A</option>
+                        <option value="9B">Kelas 9B</option>
+                        <option value="9C">Kelas 9C</option>
+                        <option value="9D">Kelas 9D</option>
+                        <option value="9E">Kelas 9E</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">Token Ujian</label>
+                    <input type="text" id="exam-token" required placeholder="Masukkan token dari guru" 
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono text-sm sm:text-base">
+                    <p class="text-[11px] text-gray-400 mt-1">*Token ujian: <b>IPA9</b></p>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base">
+                    <span>Mulai Ujian Sekarang</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- 2. HALAMAN UJIAN (CBT INTERFACE RESPONSIF HP) -->
+        <div id="view-exam" class="hidden w-full max-w-7xl grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 items-start pb-20 lg:pb-0">
+            
+            <!-- Kolom Utama: Area Soal -->
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
+                <!-- Header Soal -->
+                <div class="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-600 text-white font-bold px-2.5 py-1 rounded-lg text-xs sm:text-sm shrink-0">
+                            No. <span id="current-q-num">1</span>/40
+                        </span>
+                        <span id="current-q-subject" class="bg-indigo-100 text-indigo-800 text-[11px] sm:text-xs font-semibold px-2 py-1 rounded-md truncate max-w-[180px] sm:max-w-none">
+                            Pertumbuhan & Perkembangan
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-1.5 text-xs sm:text-sm text-gray-600">
+                        <i class="fas fa-user-circle text-blue-600"></i>
+                        <span id="display-student-info" class="font-semibold truncate max-w-[130px] sm:max-w-none">Siswa (9A)</span>
+                    </div>
+                </div>
+
+                <!-- Konten Pertanyaan -->
+                <div class="p-4 sm:p-8 flex-grow">
+                    <p id="question-text" class="text-base sm:text-lg text-gray-800 font-medium leading-relaxed mb-5 sm:mb-6">
+                        Memuat pertanyaan...
+                    </p>
+
+                    <!-- Pilihan Jawaban (Tombol besar ramah sentuhan layar HP) -->
+                    <div id="options-container" class="space-y-2.5 sm:space-y-3">
+                        <!-- Opsi A, B, C, D dirender di sini -->
+                    </div>
+                </div>
+
+                <!-- Navigasi Bawah Soal (Desktop & Tablet) -->
+                <div class="hidden sm:flex bg-gray-50 px-6 py-4 border-t border-gray-200 items-center justify-between gap-4">
+                    <button id="btn-prev-desktop" onclick="prevQuestion()" class="px-5 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition flex items-center gap-2 disabled:opacity-50">
+                        <i class="fas fa-chevron-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+
+                    <label class="flex items-center space-x-2 cursor-pointer bg-amber-100 hover:bg-amber-200 text-amber-800 px-4 py-2.5 rounded-xl font-semibold transition">
+                        <input type="checkbox" id="check-doubt-desktop" onchange="toggleDoubt(this.checked)" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                        <span>Ragu-ragu</span>
+                    </label>
+
+                    <button id="btn-next-desktop" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition flex items-center gap-2">
+                        <span>Selanjutnya</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bar Navigasi Bawah Melayang Khusus Layar HP (Mobile Bottom Bar) -->
+            <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-3 py-2.5 z-20 flex items-center justify-between gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+                <button id="btn-prev-mobile" onclick="prevQuestion()" class="flex-1 py-2.5 px-2 rounded-xl bg-gray-100 active:bg-gray-200 text-gray-700 font-bold text-xs flex items-center justify-center gap-1 disabled:opacity-40">
+                    <i class="fas fa-chevron-left"></i>
+                    <span>Prev</span>
+                </button>
+
+                <label class="flex-1 py-2.5 px-2 rounded-xl bg-amber-100 active:bg-amber-200 text-amber-900 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" id="check-doubt-mobile" onchange="toggleDoubt(this.checked)" class="w-4 h-4 text-amber-600 rounded">
+                    <span>Ragu</span>
+                </label>
+
+                <button onclick="scrollToGrid()" class="py-2.5 px-3 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center gap-1 border border-indigo-200">
+                    <i class="fas fa-th"></i>
+                    <span id="mobile-answered-count">0/40</span>
+                </button>
+
+                <button id="btn-next-mobile" onclick="nextQuestion()" class="flex-1 py-2.5 px-2 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1">
+                    <span>Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Kolom Kanan / Bawah: Navigasi Nomor & Status Anti-Curang -->
+            <div id="sidebar-panel" class="space-y-4 sm:space-y-6">
+                <!-- Panel Status Keamanan -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <h3 class="font-bold text-gray-800 text-xs sm:text-sm flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-blue-600"></i>
+                            Status Pengawasan
+                        </h3>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-green-100 text-green-700">Aktif</span>
+                    </div>
+                    <div class="bg-gray-100 rounded-xl p-3">
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-gray-600">Pelanggaran Terdeteksi</span>
+                            <span id="sidebar-warning-text" class="text-red-600">0 / 10</span>
+                        </div>
+                        <div class="w-full bg-gray-300 rounded-full h-2">
+                            <div id="warning-progress-bar" class="bg-red-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-2 leading-tight">
+                            Jangan keluar aplikasi atau membuka notifikasi. Pelanggaran ke-10 otomatis menghentikan ujian.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Panel Navigasi Nomor Soal -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-gray-800 text-xs sm:text-sm">Navigasi Nomor Soal</h3>
+                        <span class="text-xs font-semibold text-gray-500">40 Soal</span>
+                    </div>
+                    <div id="question-grid" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-1.5 mb-4 max-h-60 overflow-y-auto pr-1">
+                        <!-- Tombol nomor 1-40 dirender di sini -->
+                    </div>
+
+                    <!-- Legenda -->
+                    <div class="grid grid-cols-2 gap-2 text-[11px] sm:text-xs text-gray-600 border-t pt-3 mb-4">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-blue-600 inline-block"></span> Dijawab
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-amber-400 inline-block"></span> Ragu-ragu
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded border-2 border-blue-600 inline-block"></span> Aktif
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-gray-200 inline-block"></span> Belum
+                        </div>
+                    </div>
+
+                    <button onclick="confirmFinishExam()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Selesai & Kumpulkan</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. HALAMAN SELESAI UJIAN (HASIL SISWA) -->
+        <div id="view-result" class="hidden w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 text-center p-6 sm:p-8 my-auto">
+            <div id="result-icon-container" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-3xl sm:text-4xl">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 id="result-title" class="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Ujian Telah Selesai!</h2>
+            <p id="result-subtitle" class="text-gray-600 text-xs sm:text-sm mb-4">Jawaban Anda telah direkam oleh sistem.</p>
+
+            <!-- Status Pengiriman ke Server/Google Sheets Guru -->
+            <div id="sync-status-box" class="mb-5 p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-800 flex items-center justify-center gap-2">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Mengirim hasil ujian ke server guru...</span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 sm:p-5 mb-6 border border-gray-200 text-left space-y-2.5 text-xs sm:text-sm">
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Sekolah:</span>
+                    <span class="font-bold text-gray-800">MTs Al-Mudzakkirin</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Nama Siswa:</span>
+                    <span id="res-name" class="font-bold text-gray-800">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Kelas:</span>
+                    <span id="res-class" class="font-bold text-gray-800">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Status Penyelesaian:</span>
+                    <span id="res-status" class="font-bold text-emerald-600">Selesai Normal</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Peringatan Kecurangan:</span>
+                    <span id="res-warnings" class="font-bold text-red-600">0 Kali</span>
+                </div>
+                <div class="border-t pt-2.5 mt-2 flex justify-between items-center">
+                    <span class="text-gray-700 font-bold">Nilai Akhir:</span>
+                    <span id="res-score" class="text-2xl sm:text-3xl font-extrabold text-blue-600">0</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="resetToLogin()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-4 rounded-xl transition text-sm">
+                    Selesai & Keluar
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. HALAMAN PANEL GURU (REKAP, PENGATURAN GOOGLE SHEETS & DOWNLOAD CSV) -->
+        <div id="view-teacher" class="hidden w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="bg-slate-800 text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-chalkboard-teacher text-blue-400"></i>
+                        Dashboard Guru - MTs Al-Mudzakkirin
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm mt-1">Rekap nilai lokal perangkat & pengaturan sinkronisasi HP siswa ke Google Sheets.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <button onclick="exportResultsCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl font-semibold text-xs sm:text-sm transition flex items-center gap-2 shadow">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Unduh Excel (.CSV)</span>
+                    </button>
+                    <button onclick="clearAllResults()" class="bg-red-600 hover:bg-red-700 text-white px-3.5 py-2 rounded-xl font-semibold text-xs sm:text-sm transition flex items-center gap-2">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Reset</span>
+                    </button>
+                    <button onclick="resetToLogin()" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 py-2 rounded-xl font-semibold text-xs sm:text-sm transition">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-6 space-y-6">
+                <!-- Kotak Panduan Singkat Koneksi Google Sheets untuk HP Siswa -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-xs sm:text-sm text-blue-900">
+                    <div class="font-bold flex items-center gap-2 mb-1">
+                        <i class="fas fa-cloud-upload-alt text-blue-600"></i>
+                        Status Koneksi Google Sheets (Untuk Menerima Nilai dari HP Siswa):
+                    </div>
+                    <p id="sheets-url-status" class="text-blue-700">
+                        Belum terhubung ke Google Sheets. Untuk mengumpulkan nilai dari semua HP siswa secara online, tempelkan URL Web App Google Apps Script Anda pada variabel <code class="bg-blue-100 px-1.5 py-0.5 rounded font-mono">GOOGLE_SCRIPT_URL</code> di dalam file <code class="bg-blue-100 px-1.5 py-0.5 rounded font-mono">index.html</code> sebelum diunggah ke GitHub.
+                    </p>
+                </div>
+
+                <!-- Statistik Ringkas -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-blue-50 border border-blue-100 p-3.5 sm:p-4 rounded-xl">
+                        <p class="text-[11px] sm:text-xs text-blue-600 font-bold uppercase">Total Peserta</p>
+                        <p id="stat-total" class="text-xl sm:text-2xl font-extrabold text-blue-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-100 p-3.5 sm:p-4 rounded-xl">
+                        <p class="text-[11px] sm:text-xs text-emerald-600 font-bold uppercase">Rata-rata Nilai</p>
+                        <p id="stat-avg" class="text-xl sm:text-2xl font-extrabold text-emerald-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-100 p-3.5 sm:p-4 rounded-xl">
+                        <p class="text-[11px] sm:text-xs text-amber-600 font-bold uppercase">Ada Peringatan</p>
+                        <p id="stat-cheated" class="text-xl sm:text-2xl font-extrabold text-amber-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-100 p-3.5 sm:p-4 rounded-xl">
+                        <p class="text-[11px] sm:text-xs text-red-600 font-bold uppercase">Diskualifikasi (10x)</p>
+                        <p id="stat-disqualified" class="text-xl sm:text-2xl font-extrabold text-red-900 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Tabel Hasil Siswa -->
+                <div class="overflow-x-auto border border-gray-200 rounded-xl">
+                    <table class="w-full text-left border-collapse min-w-[650px]">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700 text-xs uppercase border-b border-gray-200">
+                                <th class="py-3 px-4 font-bold">No</th>
+                                <th class="py-3 px-4 font-bold">Waktu Selesai</th>
+                                <th class="py-3 px-4 font-bold">Nama Siswa</th>
+                                <th class="py-3 px-4 font-bold">Kelas</th>
+                                <th class="py-3 px-4 font-bold text-center">Benar / Salah</th>
+                                <th class="py-3 px-4 font-bold text-center">Peringatan</th>
+                                <th class="py-3 px-4 font-bold">Status</th>
+                                <th class="py-3 px-4 font-bold text-right">Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-table-body" class="divide-y divide-gray-200 text-xs sm:text-sm">
+                            <!-- Data baris siswa dirender di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL PERINGATAN ANTI-CURANG -->
+    <div id="modal-warning" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 text-center shadow-2xl border-4 border-red-600">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl sm:text-3xl">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-red-600 mb-2">PERINGATAN PELANGGARAN!</h3>
+            <p id="warning-reason" class="text-gray-700 text-sm font-medium mb-3">
+                Anda terdeteksi meninggalkan halaman ujian atau membuka aplikasi lain!
+            </p>
+            <div class="bg-red-50 border border-red-200 rounded-xl p-3 mb-5">
+                <p class="text-sm text-red-800 font-bold">
+                    Peringatan ke-<span id="modal-warning-count" class="text-xl underline">1</span> dari maksimal 10 kali!
+                </p>
+                <p class="text-xs text-red-600 mt-1">
+                    Jika mencapai 10 kali peringatan, ujian otomatis dikunci dan dikumpulkan.
+                </p>
+            </div>
+            <button onclick="closeWarningModal()" class="w-full bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold py-3 px-4 rounded-xl transition text-sm">
+                Saya Mengerti & Lanjutkan Ujian
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI SELESAI UJIAN -->
+    <div id="modal-confirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Konfirmasi Selesai Ujian</h3>
+            <p id="confirm-summary-text" class="text-gray-600 text-xs sm:text-sm mb-6">
+                Apakah Anda yakin ingin mengakhiri ujian sekarang? Pastikan semua soal telah terjawab.
+            </p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-4 rounded-xl transition text-sm">
+                    Batal
+                </button>
+                <button onclick="finishExam('Selesai Normal')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-sm">
+                    Ya, Kumpulkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN GURU -->
+    <div id="modal-teacher-login" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">Akses Panel Guru</h3>
+                <button onclick="closeTeacherLogin()" class="text-gray-400 hover:text-gray-600 p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Masukkan PIN Guru untuk membuka dashboard. (PIN Default: <b>1234</b>)</p>
+            <input type="password" inputmode="numeric" id="teacher-pin-input" placeholder="Masukkan PIN (1234)" 
+                class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none mb-2 text-center font-mono text-lg tracking-widest">
+            <p id="teacher-pin-error" class="hidden text-xs text-red-600 font-semibold mb-3 text-center">PIN salah! Silakan coba lagi.</p>
+            <button onclick="verifyTeacherPin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl transition mt-2 text-sm">
+                Masuk Dashboard Guru
+            </button>
+        </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toast-box" class="hidden fixed top-16 left-1/2 -translate-x-1/2 bg-gray-900/95 text-white px-4 py-2.5 rounded-xl shadow-lg z-50 text-xs sm:text-sm font-medium flex items-center gap-2 max-w-[90vw]">
+        <i class="fas fa-info-circle text-blue-400 shrink-0"></i>
+        <span id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <script>
+        // =========================================================================
+        // PENGATURAN GOOGLE SHEETS (TEMPELKAN URL WEB APP APPS SCRIPT ANDA DI SINI)
+        // Contoh: const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx.../exec";
+        // =========================================================================
+        const GOOGLE_SCRIPT_URL = "";
+
+        // ==========================================
+        // 1. BANK SOAL UAS IPA KELAS 9 SEMESTER 1 (40 SOAL)
+        // ==========================================
+        const examQuestions = [
+            // BAB 1: PERTUMBUHAN DAN PERKEMBANGAN MAKHLUK HIDUP (Soal 1 - 10)
+            {
+                id: 1,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Perbedaan mendasar antara pertumbuhan dan perkembangan pada makhluk hidup adalah ....",
+                options: [
+                    "Pertumbuhan bersifat kualitatif, sedangkan perkembangan bersifat kuantitatif",
+                    "Pertumbuhan bersifat irreversibel (tidak dapat balik), sedangkan perkembangan bersifat reversibel",
+                    "Pertumbuhan dapat diukur dengan angka (kuantitatif), sedangkan perkembangan menuju kedewasaan (kualitatif)",
+                    "Pertumbuhan hanya terjadi pada tumbuhan, sedangkan perkembangan hanya pada hewan"
+                ],
+                answer: 2
+            },
+            {
+                id: 2,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Perkecambahan yang ditandai dengan terangkatnya kotiledon ke atas permukaan tanah akibat memanjangnya hipokotil disebut perkecambahan ....",
+                options: ["Hipogeal", "Epigeal", "Vivipar", "Metamorfosis"],
+                answer: 1
+            },
+            {
+                id: 3,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Pertumbuhan primer pada ujung akar dan ujung batang tumbuhan terjadi karena adanya aktivitas jaringan ....",
+                options: ["Kambium vaskuler", "Kambium gabus", "Meristem apikal", "Parenkim korteks"],
+                answer: 2
+            },
+            {
+                id: 4,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Lingkaran tahun yang tampak pada penampang melintang batang pohon dikotil merupakan hasil aktivitas dari ....",
+                options: ["Meristem interkalar", "Kambium pembuluh (vaskuler)", "Epidermis batang", "Jaringan kolenkim"],
+                answer: 1
+            },
+            {
+                id: 5,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Hormon pada tumbuhan yang berfungsi memacu pemanjangan sel batang, menyebabkan dominansi apikal, dan merangsang pembentukan akar adalah ....",
+                options: ["Giberelin", "Sitokinin", "Auksin", "Asam Absisat"],
+                answer: 2
+            },
+            {
+                id: 6,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Ketika musim kemarau panjang, banyak pohon jati menggugurkan daunnya untuk mengurangi penguapan. Hormon tumbuhan yang berperan dalam proses pengguguran daun dan dormansi biji adalah ....",
+                options: ["Gas Etilen", "Asam Traumalin", "Asam Absisat (ABA)", "Kalin"],
+                answer: 2
+            },
+            {
+                id: 7,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Perhatikan urutan fase perkembangan embrio pada hewan berikut: (1) Morula, (2) Zigot, (3) Gastrula, (4) Blastula. Urutan tahapan perkembangan embrio yang benar adalah ....",
+                options: ["(2) - (1) - (4) - (3)", "(2) - (4) - (1) - (3)", "(1) - (2) - (3) - (4)", "(4) - (2) - (1) - (3)"],
+                answer: 0
+            },
+            {
+                id: 8,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Hewan berikut yang mengalami metamorfosis sempurna (holometabola) dalam siklus hidupnya adalah ....",
+                options: [
+                    "Belalang, kecoak, dan jangkrik",
+                    "Kupu-kupu, nyamuk, dan katak",
+                    "Capung, rayap, dan kutu daun",
+                    "Kupu-kupu, belalang, dan lalat"
+                ],
+                answer: 1
+            },
+            {
+                id: 9,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Pergiliran keturunan antara fase generatif (seksual) dan fase vegetatif (aseksual) pada tumbuhan lumut dan paku disebut ....",
+                options: ["Metamorfosis", "Metagenesis", "Partenogenesis", "Fragmentasi"],
+                answer: 1
+            },
+            {
+                id: 10,
+                subject: "Pertumbuhan & Perkembangan",
+                question: "Salah satu ciri perkembangan fisik sekunder pada remaja laki-laki saat memasuki masa pubertas yang dipengaruhi oleh hormon testosteron adalah ....",
+                options: [
+                    "Pinggul membesar dan suara melengking",
+                    "Mengalami menstruasi pertama",
+                    "Tumbuhnya jakun dan suara menjadi lebih berat",
+                    "Kulit menjadi lebih halus dan payudara membesar"
+                ],
+                answer: 2
+            },
+
+            // BAB 2: SISTEM KOORDINASI, REPRODUKSI, DAN HOMEOSTASIS (Soal 11 - 20)
+            {
+                id: 11,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Bagian sel saraf (neuron) yang berfungsi menerima impuls dari sel saraf lain dan meneruskannya ke badan sel adalah ....",
+                options: ["Akson (neurit)", "Dendrit", "Selubung mielin", "Nodus Ranvier"],
+                answer: 1
+            },
+            {
+                id: 12,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Ketika tangan kita tidak sengaja menyentuh panci panas, tangan segera ditarik sebelum otak sempat menyadarinya. Jalur gerak refleks yang benar adalah ....",
+                options: [
+                    "Reseptor → Saraf Motorik → Otak → Saraf Sensorik → Efektor",
+                    "Reseptor → Saraf Sensorik → Sumsum Tulang Belakang → Saraf Motorik → Efektor",
+                    "Reseptor → Saraf Sensorik → Otak Besar → Saraf Motorik → Efektor",
+                    "Efektor → Saraf Sensorik → Sumsum Tulang Belakang → Saraf Motorik → Reseptor"
+                ],
+                answer: 1
+            },
+            {
+                id: 13,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Bagian otak manusia yang berfungsi sebagai pusat keseimbangan tubuh dan koordinasi gerakan otot adalah ....",
+                options: ["Otak besar (Serebrum)", "Otak kecil (Serebelum)", "Sumsum lanjutan (Medula oblongata)", "Hipotalamus"],
+                answer: 1
+            },
+            {
+                id: 14,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Kelenjar endokrin yang dijuluki 'Master of Glands' karena menghasilkan berbagai hormon yang mengatur kerja kelenjar endokrin lainnya adalah ....",
+                options: ["Kelenjar Tiroid", "Kelenjar Pankreas", "Kelenjar Hipofisis (Pituitari)", "Kelenjar Adrenal"],
+                answer: 2
+            },
+            {
+                id: 15,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Pada sistem reproduksi pria, bagian yang berfungsi sebagai tempat pematangan dan penyimpanan sementara sel sperma sebelum dikeluarkan adalah ....",
+                options: ["Testis", "Epididimis", "Vas deferens", "Vesikula seminalis"],
+                answer: 1
+            },
+            {
+                id: 16,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Proses peleburan antara sel sperma dan sel telur (ovum) pada manusia secara normal terjadi di dalam ....",
+                options: ["Ovarium", "Uterus (rahim)", "Tuba fallopi (oviduk)", "Vagina"],
+                answer: 2
+            },
+            {
+                id: 17,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Hormon yang berperan memicu penebalan dinding rahim (endometrium) sebagai persiapan implantasi embrio setelah ovulasi adalah ....",
+                options: ["FSH (Follicle Stimulating Hormone)", "LH (Luteinizing Hormone)", "Progesteron", "Oksitosin"],
+                answer: 2
+            },
+            {
+                id: 18,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Penyakit menular seksual yang disebabkan oleh bakteri Treponema pallidum dengan gejala awal berupa luka pada alat kelamin (chancre) adalah ....",
+                options: ["Gonore (Kencing nanah)", "Sifilis (Raja singa)", "Herpes genitalis", "HIV/AIDS"],
+                answer: 1
+            },
+            {
+                id: 19,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Kemampuan tubuh manusia untuk mempertahankan kondisi lingkungan internal yang stabil meskipun terjadi perubahan di lingkungan luar disebut ....",
+                options: ["Metabolisme", "Homeostasis", "Adaptasi morfologi", "Osmoregulasi"],
+                answer: 1
+            },
+            {
+                id: 20,
+                subject: "Koordinasi, Reproduksi & Homeostasis",
+                question: "Saat kadar glukosa dalam darah meningkat drastis setelah makan, pankreas akan merespons untuk menjaga homeostasis dengan cara mensekresikan hormon ....",
+                options: ["Glukagon untuk mengubah glikogen menjadi glukosa", "Insulin untuk mengubah glukosa menjadi glikogen", "Adrenalin untuk mempercepat denyut jantung", "Tiroksin untuk meningkatkan laju metabolisme"],
+                answer: 1
+            },
+
+            // BAB 3: TEKANAN DAN LISTRIK (Soal 21 - 30)
+            {
+                id: 21,
+                subject: "Tekanan & Listrik",
+                question: "Sebuah balok kayu bermassa 20 kg diletakkan di atas lantai dengan luas bidang sentuh 0,5 m². Jika percepatan gravitasi g = 10 m/s², besar tekanan yang diberikan balok terhadap lantai adalah ....",
+                options: ["100 Pa", "200 Pa", "400 Pa", "1.000 Pa"],
+                answer: 2
+            },
+            {
+                id: 22,
+                subject: "Tekanan & Listrik",
+                question: "Seorang penyelam berada pada kedalaman 5 meter di bawah permukaan air danau yang memiliki massa jenis 1.000 kg/m³. Jika g = 10 m/s², tekanan hidrostatis yang dialami penyelam tersebut adalah ....",
+                options: ["5.000 Pa", "25.000 Pa", "50.000 Pa", "500.000 Pa"],
+                answer: 2
+            },
+            {
+                id: 23,
+                subject: "Tekanan & Listrik",
+                question: "Dongkrak hidrolik bekerja berdasarkan prinsip Hukum Pascal. Jika luas penampang kecil A₁ = 10 cm² dan luas penampang besar A₂ = 500 cm², gaya yang diperlukan pada penampang kecil untuk mengangkat beban 10.000 N adalah ....",
+                options: ["100 N", "200 N", "500 N", "2.000 N"],
+                answer: 1
+            },
+            {
+                id: 24,
+                subject: "Tekanan & Listrik",
+                question: "Kapal laut yang terbuat dari baja dapat terapung di permukaan air laut karena ....",
+                options: [
+                    "Massa jenis baja lebih kecil daripada massa jenis air laut",
+                    "Bagian dalam kapal dibuat berongga sehingga massa jenis rata-rata kapal lebih kecil dari air laut",
+                    "Gaya gravitasi di laut lebih kecil daripada di daratan",
+                    "Tegangan permukaan air laut mampu menahan seluruh berat kapal"
+                ],
+                answer: 1
+            },
+            {
+                id: 25,
+                subject: "Tekanan & Listrik",
+                question: "Penggaris plastik yang digosokkan pada rambut kering dapat menarik potongan kertas kecil karena penggaris menjadi bermuatan listrik ....",
+                options: [
+                    "Positif, karena elektron berpindah dari penggaris ke rambut",
+                    "Negatif, karena elektron berpindah dari rambut ke penggaris",
+                    "Positif, karena proton berpindah dari rambut ke penggaris",
+                    "Negatif, karena proton berpindah dari penggaris ke rambut"
+                ],
+                answer: 1
+            },
+            {
+                id: 26,
+                subject: "Tekanan & Listrik",
+                question: "Dua buah muatan listrik terpisah pada jarak r dan menghasilkan gaya Coulomb sebesar F. Jika jarak kedua muatan diperbesar menjadi 3r, maka gaya Coulomb yang terjadi sekarang adalah ....",
+                options: ["9 F", "3 F", "1/3 F", "1/9 F"],
+                answer: 3
+            },
+            {
+                id: 27,
+                subject: "Tekanan & Listrik",
+                question: "Sebuah penghantar memiliki hambatan 12 Ohm dihubungkan dengan sumber tegangan 6 Volt. Kuat arus listrik yang mengalir pada penghantar tersebut adalah ....",
+                options: ["0,5 Ampere", "2 Ampere", "6 Ampere", "72 Ampere"],
+                answer: 0
+            },
+            {
+                id: 28,
+                subject: "Tekanan & Listrik",
+                question: "Tiga buah resistor masing-masing bernilai 6 Ohm dirangkai secara paralel. Besar hambatan pengganti rangkaian tersebut adalah ....",
+                options: ["18 Ohm", "6 Ohm", "3 Ohm", "2 Ohm"],
+                answer: 3
+            },
+            {
+                id: 29,
+                subject: "Tekanan & Listrik",
+                question: "Sebuah setrika listrik bertuliskan 350 Watt / 220 Volt digunakan selama 2 jam setiap hari. Besar energi listrik yang digunakan setrika tersebut selama 30 hari adalah ....",
+                options: ["7 kWh", "21 kWh", "70 kWh", "210 kWh"],
+                answer: 1
+            },
+            {
+                id: 30,
+                subject: "Tekanan & Listrik",
+                question: "Alat pengaman pada instalasi listrik rumah tangga yang berfungsi memutus arus listrik secara otomatis ketika terjadi korsleting (hubung singkat) atau beban berlebih adalah ....",
+                options: ["kWh Meter", "MCB (Miniature Circuit Breaker)", "Stop Kontak", "Transformator"],
+                answer: 1
+            },
+
+            // BAB 4: MAGNET DAN SUMBER ENERGI ALTERNATIF (Soal 31 - 40)
+            {
+                id: 31,
+                subject: "Magnet & Energi Alternatif",
+                question: "Benda-benda yang ditarik sangat kuat oleh magnet, seperti besi, baja, nikel, dan kobalt, digolongkan ke dalam bahan ....",
+                options: ["Diamagnetik", "Paramagnetik", "Feromagnetik", "Nonmagnetik"],
+                answer: 2
+            },
+            {
+                id: 32,
+                subject: "Magnet & Energi Alternatif",
+                question: "Sebuah batang besi AB digosok dengan magnet batang secara searah dari ujung A menuju ujung B menggunakan kutub Utara magnet. Kutub magnet yang terbentuk pada ujung A dan B berturut-turut adalah ....",
+                options: [
+                    "A = Utara, B = Selatan",
+                    "A = Selatan, B = Utara",
+                    "A = Utara, B = Utara",
+                    "A = Selatan, B = Selatan"
+                ],
+                answer: 0
+            },
+            {
+                id: 33,
+                subject: "Magnet & Energi Alternatif",
+                question: "Jarum kompas selalu menunjuk arah utara dan selatan geografis bumi karena ....",
+                options: [
+                    "Adanya gaya gravitasi di kutub utara dan selatan",
+                    "Kutub utara magnet bumi berada di sekitar kutub selatan geografis bumi",
+                    "Perputaran bumi pada porosnya (rotasi bumi)",
+                    "Pengaruh medan magnet bulan dan matahari"
+                ],
+                answer: 1
+            },
+            {
+                id: 34,
+                subject: "Magnet & Energi Alternatif",
+                question: "Cara berikut ini yang DAPAT memperbesar kekuatan medan magnet pada sebuah elektromagnet adalah ....",
+                options: [
+                    "Mengurangi jumlah lilitan kumparan kawat",
+                    "Memperkecil kuat arus listrik yang mengalir",
+                    "Menambahkan inti besi lunak di dalam kumparan",
+                    "Mengganti kawat tembaga dengan kawat plastik"
+                ],
+                answer: 2
+            },
+            {
+                id: 35,
+                subject: "Magnet & Energi Alternatif",
+                question: "Sebuah transformator step-down memiliki jumlah lilitan primer 1.000 lilitan dan lilitan sekunder 200 lilitan. Jika tegangan input primer sebesar 220 Volt, maka tegangan output sekundernya adalah ....",
+                options: ["22 Volt", "44 Volt", "110 Volt", "1.100 Volt"],
+                answer: 1
+            },
+            {
+                id: 36,
+                subject: "Magnet & Energi Alternatif",
+                question: "Peristiwa timbulnya gaya gerak listrik (GGL) induksi pada ujung-ujung kumparan akibat perubahan jumlah garis gaya magnet yang memotong kumparan ditemukan oleh ....",
+                options: ["Hans Christian Oersted", "Michael Faraday", "Charles Augustin de Coulomb", "Andre Marie Ampere"],
+                answer: 1
+            },
+            {
+                id: 37,
+                subject: "Magnet & Energi Alternatif",
+                question: "Komponen utama pada Pembangkit Listrik Tenaga Surya (PLTS) yang berfungsi mengubah energi cahaya matahari secara langsung menjadi energi listrik adalah ....",
+                options: ["Turbin uap", "Sel fotovoltaik (panel surya)", "Generator induksi", "Kolektor panas"],
+                answer: 1
+            },
+            {
+                id: 38,
+                subject: "Magnet & Energi Alternatif",
+                question: "Sumber energi alternatif yang dihasilkan dari proses fermentasi kotoran ternak atau limbah organik oleh bakteri anaerob dan menghasilkan gas metana disebut ....",
+                options: ["Biodiesel", "Bioetanol", "Biogas", "Geotermal"],
+                answer: 2
+            },
+            {
+                id: 39,
+                subject: "Magnet & Energi Alternatif",
+                question: "Indonesia memiliki potensi besar dalam pengembangan Pembangkit Listrik Tenaga Panas Bumi (PLTP / Geotermal) karena wilayah Indonesia ....",
+                options: [
+                    "Memiliki garis pantai terpanjang kedua di dunia",
+                    "Berada di jalur pertemuan lempeng tektonik dan cincin api (Ring of Fire)",
+                    "Terletak di daerah beriklim tropis dengan curah hujan tinggi",
+                    "Memiliki kecepatan angin laut yang sangat kencang sepanjang tahun"
+                ],
+                answer: 1
+            },
+            {
+                id: 40,
+                subject: "Magnet & Energi Alternatif",
+                question: "Keuntungan utama penggunaan sumber energi terbarukan (alternatif) dibandingkan bahan bakar fosil adalah ....",
+                options: [
+                    "Biaya pembangunan instalasi awalnya sangat murah di semua tempat",
+                    "Menghasilkan emisi gas rumah kaca yang jauh lebih rendah dan tidak akan habis",
+                    "Dapat langsung digunakan pada semua mesin kendaraan tanpa modifikasi",
+                    "Tidak dipengaruhi oleh kondisi cuaca maupun letak geografis"
+                ],
+                answer: 1
+            }
+        ];
+
+        // ==========================================
+        // 2. STATE APLIKASI
+        // ==========================================
+        let currentStudent = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(examQuestions.length).fill(null);
+        let userDoubts = new Array(examQuestions.length).fill(false);
+        let warningCount = 0;
+        const MAX_WARNINGS = 10;
+        let isExamActive = false;
+        let examTimerInterval = null;
+        let timeRemainingSeconds = 60 * 60; // 60 Menit
+        let lastWarningTime = 0;
+
+        // Penyimpanan lokal sesi (untuk pratinjau langsung di perangkat yang sama)
+        let savedExamResults = [];
+
+        // Cek status URL Google Sheets saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.startsWith('http')) {
+                const statusEl = document.getElementById('sheets-url-status');
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="text-emerald-700 font-bold"><i class="fas fa-check-circle"></i> Terhubung ke Google Sheets!</span> Nilai siswa dari HP otomatis terkirim ke Spreadsheet Anda.`;
+                }
+            }
+        });
+
+        // ==========================================
+        // 3. SISTEM NAVIGASI HALAMAN & TOAST
+        // ==========================================
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function switchView(viewId) {
+            ['view-login', 'view-exam', 'view-result', 'view-teacher'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if (viewId === 'view-exam') {
+                document.getElementById('nav-actions').classList.add('hidden');
+                document.getElementById('exam-header-info').classList.remove('hidden');
+            } else {
+                document.getElementById('nav-actions').classList.remove('hidden');
+                document.getElementById('exam-header-info').classList.add('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToGrid() {
+            const panel = document.getElementById('sidebar-panel');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // 4. LOGIKA MULAI UJIAN
+        // ==========================================
+        document.getElementById('student-login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('student-name').value.trim();
+            const className = document.getElementById('student-class').value;
+            const token = document.getElementById('exam-token').value.trim().toUpperCase();
+
+            if (!name || !className) {
+                showToast('Harap isi Nama Lengkap dan pilih Kelas!');
+                return;
+            }
+
+            if (token !== 'IPA9') {
+                showToast('Token ujian salah! Gunakan token: IPA9');
+                return;
+            }
+
+            currentStudent = { name, className };
+            currentQuestionIndex = 0;
+            userAnswers = new Array(examQuestions.length).fill(null);
+            userDoubts = new Array(examQuestions.length).fill(false);
+            warningCount = 0;
+            timeRemainingSeconds = 60 * 60;
+            isExamActive = true;
+
+            document.getElementById('display-student-info').innerText = `${name} (${className})`;
+            updateWarningUI();
+
+            // Aktifkan Fullscreen pada browser HP/Desktop yang mendukung
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                }
+            } catch (err) {}
+
+            switchView('view-exam');
+            renderQuestionGrid();
+            loadQuestion(0);
+            startTimer();
+            showToast('Ujian dimulai! Jangan keluar dari halaman ini.');
+        });
+
+        // ==========================================
+        // 5. FITUR ANTI-CURANG (PERINGATAN 10 KALI - KOMPATIBEL HP)
+        // ==========================================
+        function triggerCheatingWarning(reason) {
+            if (!isExamActive) return;
+
+            const now = Date.now();
+            if (now - lastWarningTime < 1500) return;
+            lastWarningTime = now;
+
+            warningCount++;
+            updateWarningUI();
+
+            if (warningCount >= MAX_WARNINGS) {
+                document.getElementById('modal-warning').classList.add('hidden');
+                finishExam('Diskualifikasi (10x Curang)');
+            } else {
+                document.getElementById('warning-reason').innerText = reason;
+                document.getElementById('modal-warning-count').innerText = warningCount;
+                document.getElementById('modal-warning').classList.remove('hidden');
+            }
+        }
+
+        function updateWarningUI() {
+            document.getElementById('warning-badge').innerText = warningCount;
+            document.getElementById('sidebar-warning-text').innerText = `${warningCount} / ${MAX_WARNINGS}`;
+            const percentage = (warningCount / MAX_WARNINGS) * 100;
+            document.getElementById('warning-progress-bar').style.width = `${percentage}%`;
+        }
+
+        function closeWarningModal() {
+            document.getElementById('modal-warning').classList.add('hidden');
+            try {
+                if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                }
+            } catch (err) {}
+        }
+
+        // Deteksi Pindah Tab / Minimize / Tekan Home di HP
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isExamActive) {
+                triggerCheatingWarning('Anda terdeteksi meninggalkan halaman ujian atau membuka aplikasi lain di HP!');
+            }
+        });
+
+        // Deteksi Kehilangan Fokus (Split Screen / Tap Notifikasi mengambang di HP)
+        window.addEventListener('blur', () => {
+            if (isExamActive) {
+                triggerCheatingWarning('Layar ujian kehilangan fokus! Dilarang membuka notifikasi atau split-screen.');
+            }
+        });
+
+        // Deteksi Tahan Layar (Long Press) / Klik Kanan
+        document.addEventListener('contextmenu', (e) => {
+            if (isExamActive) {
+                e.preventDefault();
+                triggerCheatingWarning('Menahan layar (copy teks) atau klik kanan dilarang selama ujian!');
+            }
+        });
+
+        // Deteksi Tombol Pintasan Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (!isExamActive) return;
+            if (
+                (e.ctrlKey && ['c', 'v', 'x', 'u', 's', 'p', 'a'].includes(e.key.toLowerCase())) ||
+                e.key === 'F12' ||
+                e.key === 'PrintScreen'
+            ) {
+                e.preventDefault();
+                triggerCheatingWarning(`Penggunaan tombol (${e.key.toUpperCase()}) dilarang selama ujian!`);
+            }
+        });
+
+        // ==========================================
+        // 6. NAVIGASI & RENDER SOAL
+        // ==========================================
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = examQuestions[index];
+
+            document.getElementById('current-q-num').innerText = index + 1;
+            document.getElementById('current-q-subject').innerText = q.subject;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Sinkronkan checkbox ragu-ragu desktop & mobile
+            document.getElementById('check-doubt-desktop').checked = userDoubts[index];
+            document.getElementById('check-doubt-mobile').checked = userDoubts[index];
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((optText, optIndex) => {
+                const isSelected = userAnswers[index] === optIndex;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectAnswer(optIndex);
+                btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border-2 transition flex items-start sm:items-center gap-3 sm:gap-4 active:scale-[0.99] ${
+                    isSelected 
+                    ? 'border-blue-600 bg-blue-50 text-blue-900 font-semibold shadow-sm' 
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50 text-gray-700'
+                }`;
+
+                btn.innerHTML = `
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 mt-0.5 sm:mt-0 ${
+                        isSelected ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+                    }">
+                        ${optionLetters[optIndex]}
+                    </span>
+                    <span class="text-sm sm:text-base leading-snug">${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Atur tombol Prev / Next Desktop & Mobile
+            const isFirst = index === 0;
+            const isLast = index === examQuestions.length - 1;
+
+            document.getElementById('btn-prev-desktop').disabled = isFirst;
+            document.getElementById('btn-prev-mobile').disabled = isFirst;
+
+            const btnNextDesktop = document.getElementById('btn-next-desktop');
+            const btnNextMobile = document.getElementById('btn-next-mobile');
+
+            if (isLast) {
+                btnNextDesktop.innerHTML = `<span>Selesai</span><i class="fas fa-check"></i>`;
+                btnNextDesktop.className = "px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition flex items-center gap-2";
+                btnNextDesktop.onclick = confirmFinishExam;
+
+                btnNextMobile.innerHTML = `<span>Selesai</span><i class="fas fa-check"></i>`;
+                btnNextMobile.className = "flex-1 py-2.5 px-2 rounded-xl bg-emerald-600 active:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1";
+                btnNextMobile.onclick = confirmFinishExam;
+            } else {
+                btnNextDesktop.innerHTML = `<span>Selanjutnya</span><i class="fas fa-chevron-right"></i>`;
+                btnNextDesktop.className = "px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition flex items-center gap-2";
+                btnNextDesktop.onclick = nextQuestion;
+
+                btnNextMobile.innerHTML = `<span>Next</span><i class="fas fa-chevron-right"></i>`;
+                btnNextMobile.className = "flex-1 py-2.5 px-2 rounded-xl bg-blue-600 active:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1";
+                btnNextMobile.onclick = nextQuestion;
+            }
+
+            renderQuestionGrid();
+        }
+
+        function selectAnswer(optIndex) {
+            userAnswers[currentQuestionIndex] = optIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function toggleDoubt(isChecked) {
+            userDoubts[currentQuestionIndex] = isChecked;
+            document.getElementById('check-doubt-desktop').checked = isChecked;
+            document.getElementById('check-doubt-mobile').checked = isChecked;
+            renderQuestionGrid();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) loadQuestion(currentQuestionIndex - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < examQuestions.length - 1) loadQuestion(currentQuestionIndex + 1);
+        }
+
+        function renderQuestionGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+
+            const answeredTotal = userAnswers.filter(a => a !== null).length;
+            const mobileCounter = document.getElementById('mobile-answered-count');
+            if (mobileCounter) mobileCounter.innerText = `${answeredTotal}/40`;
+
+            examQuestions.forEach((_, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.innerText = idx + 1;
+                btn.onclick = () => {
+                    loadQuestion(idx);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+
+                let baseClass = "h-10 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-center ";
+                if (idx === currentQuestionIndex) {
+                    baseClass += "ring-2 ring-offset-1 ring-blue-600 ";
+                }
+
+                if (userDoubts[idx]) {
+                    baseClass += "bg-amber-400 text-amber-950";
+                } else if (userAnswers[idx] !== null) {
+                    baseClass += "bg-blue-600 text-white";
+                } else {
+                    baseClass += "bg-gray-200 text-gray-700 hover:bg-gray-300";
+                }
+
+                btn.className = baseClass;
+                grid.appendChild(btn);
+            });
+        }
+
+        // ==========================================
+        // 7. TIMER, PENYELESAIAN & PENGIRIMAN DATA KE GOOGLE SHEETS
+        // ==========================================
+        function startTimer() {
+            clearInterval(examTimerInterval);
+            updateTimerDisplay();
+            examTimerInterval = setInterval(() => {
+                if (!isExamActive) {
+                    clearInterval(examTimerInterval);
+                    return;
+                }
+                timeRemainingSeconds--;
+                updateTimerDisplay();
+
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(examTimerInterval);
+                    finishExam('Waktu Habis');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemainingSeconds / 60);
+            const secs = timeRemainingSeconds % 60;
+            document.getElementById('timer-display').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function confirmFinishExam() {
+            const unanswered = userAnswers.filter(a => a === null).length;
+            const summaryText = unanswered > 0 
+                ? `Masih ada ${unanswered} soal yang belum Anda jawab. Apakah Anda yakin ingin mengumpulkan ujian sekarang?`
+                : `Semua 40 soal telah terjawab. Apakah Anda yakin ingin mengakhiri dan mengumpulkan ujian sekarang?`;
+            
+            document.getElementById('confirm-summary-text').innerText = summaryText;
+            document.getElementById('modal-confirm').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+        }
+
+        async function finishExam(statusReason) {
+            isExamActive = false;
+            clearInterval(examTimerInterval);
+            closeConfirmModal();
+            document.getElementById('modal-warning').classList.add('hidden');
+
+            try {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            } catch (err) {}
+
+            // Hitung Skor
+            let correctCount = 0;
+            examQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) {
+                    correctCount++;
+                }
+            });
+            const wrongCount = examQuestions.length - correctCount;
+            const finalScore = Math.round((correctCount / examQuestions.length) * 100);
+
+            const now = new Date();
+            const timestamp = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
+
+            const resultRecord = {
+                timestamp,
+                name: currentStudent.name,
+                className: currentStudent.className,
+                correct: correctCount,
+                wrong: wrongCount,
+                warnings: warningCount,
+                status: statusReason,
+                score: finalScore
+            };
+            savedExamResults.unshift(resultRecord);
+
+            // Render Halaman Hasil
+            const isDisqualified = statusReason.includes('Diskualifikasi');
+            const iconContainer = document.getElementById('result-icon-container');
+            
+            if (isDisqualified) {
+                iconContainer.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-3xl sm:text-4xl";
+                iconContainer.innerHTML = '<i class="fas fa-ban"></i>';
+                document.getElementById('result-title').innerText = "Ujian Dihentikan Sistem!";
+                document.getElementById('result-title').classList.add('text-red-600');
+                document.getElementById('result-subtitle').innerText = "Anda melanggar aturan ujian sebanyak 10 kali. Jawaban dikumpulkan otomatis.";
+                document.getElementById('res-status').className = "font-bold text-red-600";
+            } else {
+                iconContainer.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-3xl sm:text-4xl";
+                iconContainer.innerHTML = '<i class="fas fa-check"></i>';
+                document.getElementById('result-title').innerText = "Ujian Telah Selesai!";
+                document.getElementById('result-title').classList.remove('text-red-600');
+                document.getElementById('result-subtitle').innerText = "Terima kasih telah mengerjakan UAS IPA dengan jujur.";
+                document.getElementById('res-status').className = "font-bold text-emerald-600";
+            }
+
+            document.getElementById('res-name').innerText = currentStudent.name;
+            document.getElementById('res-class').innerText = currentStudent.className;
+            document.getElementById('res-status').innerText = statusReason;
+            document.getElementById('res-warnings').innerText = `${warningCount} Kali`;
+            document.getElementById('res-score').innerText = finalScore;
+
+            switchView('view-result');
+
+            // Kirim hasil ke Google Sheets jika URL sudah diisi oleh Guru
+            const syncBox = document.getElementById('sync-status-box');
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.startsWith('http')) {
+                syncBox.className = "mb-5 p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-800 flex items-center justify-center gap-2";
+                syncBox.innerHTML = `<i class="fas fa-spinner fa-spin"></i><span>Mengirim nilai ke server guru...</span>`;
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(resultRecord)
+                    });
+                    syncBox.className = "mb-5 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 flex items-center justify-center gap-2";
+                    syncBox.innerHTML = `<i class="fas fa-cloud-check"></i><span>Nilai berhasil terkirim ke Spreadsheet Guru!</span>`;
+                } catch (err) {
+                    syncBox.className = "mb-5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 flex items-center justify-center gap-2";
+                    syncBox.innerHTML = `<i class="fas fa-exclamation-circle"></i><span>Gagal kirim otomatis. Tunjukkan layar nilai ini ke guru.</span>`;
+                }
+            } else {
+                syncBox.className = "mb-5 p-3 rounded-xl bg-gray-100 border border-gray-200 text-xs font-medium text-gray-600 flex items-center justify-center gap-2";
+                syncBox.innerHTML = `<i class="fas fa-info-circle text-blue-600"></i><span>Silakan screenshot layar ini sebagai bukti selesai ujian.</span>`;
+            }
+        }
+
+        function resetToLogin() {
+            isExamActive = false;
+            document.getElementById('student-login-form').reset();
+            switchView('view-login');
+        }
+
+        // ==========================================
+        // 8. PANEL GURU & EKSPOR DATA (CSV/EXCEL)
+        // ==========================================
+        function showTeacherLogin() {
+            document.getElementById('teacher-pin-input').value = '';
+            document.getElementById('teacher-pin-error').classList.add('hidden');
+            document.getElementById('modal-teacher-login').classList.remove('hidden');
+        }
+
+        function closeTeacherLogin() {
+            document.getElementById('modal-teacher-login').classList.add('hidden');
+        }
+
+        function verifyTeacherPin() {
+            const pin = document.getElementById('teacher-pin-input').value;
+            if (pin === '1234') {
+                closeTeacherLogin();
+                renderTeacherDashboard();
+                switchView('view-teacher');
+            } else {
+                document.getElementById('teacher-pin-error').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('teacher-pin-input').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') verifyTeacherPin();
+        });
+
+        function renderTeacherDashboard() {
+            const tbody = document.getElementById('teacher-table-body');
+            tbody.innerHTML = '';
+
+            const total = savedExamResults.length;
+            const avg = total > 0 
+                ? Math.round(savedExamResults.reduce((acc, item) => acc + item.score, 0) / total) 
+                : 0;
+            const cheated = savedExamResults.filter(item => item.warnings > 0).length;
+            const disqualified = savedExamResults.filter(item => item.warnings >= MAX_WARNINGS).length;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-avg').innerText = avg;
+            document.getElementById('stat-cheated').innerText = cheated;
+            document.getElementById('stat-disqualified').innerText = disqualified;
+
+            if (total === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="py-8 text-center text-gray-500">
+                            Belum ada data ujian di perangkat ini.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            savedExamResults.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition";
+
+                const statusBadge = row.status.includes('Diskualifikasi')
+                    ? `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[11px] font-bold">${row.status}</span>`
+                    : `<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[11px] font-bold">${row.status}</span>`;
+
+                const warningBadge = row.warnings > 0
+                    ? `<span class="text-red-600 font-bold">${row.warnings}x</span>`
+                    : `<span class="text-gray-400">0x</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-gray-600">${index + 1}</td>
+                    <td class="py-3 px-4 text-xs text-gray-500 font-mono">${row.timestamp}</td>
+                    <td class="py-3 px-4 font-semibold text-gray-800">${row.name}</td>
+                    <td class="py-3 px-4 text-gray-700">${row.className}</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="text-emerald-600 font-bold">${row.correct}</span> / 
+                        <span class="text-red-500 font-bold">${row.wrong}</span>
+                    </td>
+                    <td class="py-3 px-4 text-center">${warningBadge}</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-right font-extrabold text-blue-700">${row.score}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function exportResultsCSV() {
+            if (savedExamResults.length === 0) {
+                showToast('Tidak ada data hasil ujian untuk disimpan!');
+                return;
+            }
+
+            let csvContent = "No;Waktu Selesai;Nama Siswa;Kelas;Jawaban Benar;Jawaban Salah;Jumlah Peringatan;Status Ujian;Nilai Akhir\n";
+
+            savedExamResults.forEach((row, index) => {
+                const line = [
+                    index + 1,
+                    `"${row.timestamp}"`,
+                    `"${row.name}"`,
+                    `"${row.className}"`,
+                    row.correct,
+                    row.wrong,
+                    row.warnings,
+                    `"${row.status}"`,
+                    row.score
+                ].join(";");
+                csvContent += line + "\n";
+            });
+
+            const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            const dateStr = new Date().toISOString().slice(0, 10);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Hasil_UAS_IPA_MTs_Al-Mudzakkirin_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('File hasil ujian (.CSV) berhasil diunduh!');
+        }
+
+        function clearAllResults() {
+            savedExamResults = [];
+            renderTeacherDashboard();
+            showToast('Data lokal perangkat telah dikosongkan.');
+        }
+    </script>
+</body>
+</html>
